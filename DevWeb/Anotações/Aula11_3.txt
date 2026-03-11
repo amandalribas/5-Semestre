@@ -1,0 +1,33 @@
+Ementa:
+	JPA;
+	Spring Boot;
+	React;
+	Tailwindcss.
+
+JPA Mapeamento de Objeto Relacional (ORM) -- classes vão ser mapeadas em tabelas do BD
+
+Usando Maven...
+C:/Usuários/amand/.m2/repository/
+	no pom.xlm:
+    <dependencies>
+        <dependency>
+            <groupId>corejava</groupId>
+            <artifactId>console</artifactId>
+            <version>1.0</version>
+        </dependency>
+    </dependencies>
+e adiciona arquivo do classroom
+
+hibernate: framework de objeto relacional, JPA foi construída usando o hibernate como base, "cópia autorizada" do hibernate com algumas modificações.
+
+Ao adicionar certa dependência, que possui suas depedencias de certas bibliotecas, e assim sucessivamente, a JPA baixa todas as dependências necessárias.
+
+em persistence.xml tem as informações do BD, precisa de SGBD -- mySQL
+
+Regra de negócio coloca em uma classe de serviço (service)
+
+Você só cria a interface e o SpringBoot implementa a classe de repositório/DAO
+
+
+JPAProdutoDAO: estou implemetando a classe ProdutoDAO usando JPA
+também usam ProdutoDAOImpl

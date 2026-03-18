@@ -1,0 +1,96 @@
+JPA : Mapeamento objeto relacional
+
+Classes para serem mapeadas em tabelas: @Entity (import javax.persistence).
+Se o nome da tabela for diferente @Table(name = "nometabela")
+
+@Id -> chave primária
+@Column(name = "nome_da_coluna")
+
+long sem valor definido será 0
+Long sem valor definido será null
+
+Atributos identificadores sempre são de tipo classe, nunca de tipo primitivo
+OBJETO
+	* Transiente -> id == null, tá na memória mas não está no BD, só pode salvar no banco de dados pela primeira vez se for transiente. 
+	* Persistente ->  quando o objeto está sendo monitorado pelo entity manager, ainda não é exibido 
+	* Destacado ->  id != null e o objeto não está sendo monitorado pelo entity manager. Ta na memória/interface
+Para que as alterações ocorram, precisa estar sendo monitorado, precisa estar no try do DAO
+
+Construtor Vazio:  Ex: Busca produto de id 10 
+	1 . Executa comando SQL de busca, a partir da API JDBC // trás para memória produto de Id 10
+	2. Produto p = new Produto() ; //motivo do construtor vazio! --> cria um objeto do tipo produto com id=NULL, nome=NULL, lanceMinimo = 0 (pq é tipo primitivo é 0), dataCadastro = NULL,
+	3. p.setId(10) //utiliza biblioteca de reflexão já que é um método privado
+	   p.setNome("...") // do que foi encontrado com so comandos SQL
+	   ...
+
+
+	Se não tiver construtor vazio (public Produto()), na hora que o programa foi criado não cria direto pelo construtor padrão 9public Produto(string nome, double lanceMinimo ...)), precisa criar outro "vazio" manualmente.
+	Se não tiver nenhum cria o construtor vazio (public Produto())
+
+
+Quando bota as anotações nos campos (ex: @Id acima de Private Long id;), diz para a JPA não executar os metodos set para atribuir os valores, mas sim para aplicar diretamente no campo.
+
+Frameworks de validação - Antes de fazia validação dentro dos métodos SET -- não faz sentido validar do banco de dados. 
+	Hibernate Valitor
+
+
+Padrão DAO:
+	Interface ProdutoDAO: (Compila com esse)
+		inclui();
+		altera();
+		...
+		
+	JPA ProdutoDAO implementa ProdutoDAO (Executa com esse)
+		inclui();
+		...
+
+
+
+
+=============== Em JPAProdutoDAO:
+			em = FabricaDeEntityManager.criarEntityManager(); //toda vez cria um novo
+			tx = em.getTransaction(); //toda vez que for executado também cria um novo
+			//abrindo transação:
+			tx.begin();
+
+			em.persist(umProduto); //objeto transiente -- o persist agenda a execução de um comando SQL Insert 
+			umProduto.setNome("abc"); //update
+			tx.commit(); // só executa no commit
+
+
+Entity Manager: Tem uma lista de objetos monitorados
+Em seguida usa o Entity Manager para criar o ENtityTransactio
+
+
+o persist agenda a execução de um comando SQL Insert
+em.persist(umObjeto): //deixa de ser transiente e vira persistente 
+	1. inclui o objeto umProduto na lista de objetos monitorados do Entity Manager
+	2. Atribui ao id do produto o próximo valor do Id
+	3. Agenda a execução do comando Insert
+	4. Agenda a execução do comando Update
+		... 		
+Só executa no COMMIT
+
+JPA verifica se o objeto está no entity manager, 
+Cria usa e destrói o entity manager
+
+Atualização ou Deleção é colocado um lock
+
+No momento que o objeto é colocado na lista de objetos monitorados pelo entity manager ele vira persistente.
+
+Nos SGBDs todos os comandos que falham sofrem Rollback();
+
+Se o entity manager fosse estático, os objetos iam continuar na lista do entity manager 
+
+
+
+--- Maneira mais ineficiente de "cria cria cria cria usa usa ... destrói"
+(Bowser) - - - - objeto sessão -- > Servidor (Executando métodos até voltar a resposta, que quando tiver saindo irá fechar o entity manager)
+	< - -volta requisição - - -
+ 
+
+Bowser ->	Servidor -> Controler -> Service -> DAO
+ 	|Página<-        <-	      < -        <-
+
+
+Produto.class = aponta na memória para a classe produto

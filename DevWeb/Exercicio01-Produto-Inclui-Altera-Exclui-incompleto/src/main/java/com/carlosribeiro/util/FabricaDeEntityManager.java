@@ -12,7 +12,7 @@ public class FabricaDeEntityManager
 	private FabricaDeEntityManager()
 	{	
 		try
-		{	emf = Persistence.createEntityManagerFactory("exercicio");
+		{	emf = Persistence.createEntityManagerFactory("desweb");
 		}
 		catch(Throwable e)
 		{

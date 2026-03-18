@@ -1,0 +1,46 @@
+Transiente id == null ainda não monitorado pelo entity manager
+Persistente id != null monitorado pelo entity manager 
+Destacado id != null não monitorado pelo entity manager
+
+
+Método de alterar:
+
+ //merge: procura na lista de objetos monitorados do entity manager e procura um objeto do tipo produto com o Id igual ao umProduto,se não tem vai no bd e recupera, compara com o que já existe com o umProduto e agenda um update após comparar campo a campo, só será executado no commit
+	Se existir ele altera
+	Se não existir mais ele cria
+		Solução: Fazer uma busca antes do merge
+
+
+só os objetos recuperados pela transação são monitorados pelo entity manager 
+			produto = em.find(Produto.class,umProduto.getId()); //procura no entity manager um objeto do tipo produto cujo o id corresponde ao id de umProduto, se não tiver vai no banco de dados e trás para a memória e retorna ele para o entity manager -> só um acesso ao BD
+
+Não existe update no JPA
+
+SELECT FOR UPDATE: PESSIMIST_WRITE -> Coloca um lock na linha, outro usuário não consegue alterar a linha enquanto você não comita
+
+
+
+
+Método de remover
+//JPA não tem método de deleção direto ,exige que recupere primeiro o produto para depois deletar
+
+
+** A partir do find o objeto vira persistente (monitorado)
+
+Método de recuperar todos os produtos
+	Não precisa de transação, não haverá commit
+
+
+Na principal:
+		ProdutoDAO produtoDAO = FabricaDeDAOs.getDAO(ProdutoDAO.class);
+	//produtoDAO.class aponta para um objeto em memória do tipo Class que é uma interface ProdutoDAO na memória
+	JPAProdutoDAO é um ProdutoDAO
+	<T> Tipo Genérico
+
+--
+org.reflections - dependência de reflexões
+Reflections reflections = new Reflections("com.carlosribeiro.dao.impl"); 
+		//essa biblioteca procura nesse package uma classe que implementa ProdutoDAO
+
+
+		//implementa uma parte do spring boot que é implementar injeção de dependências utilizando uma fábrica de objetos

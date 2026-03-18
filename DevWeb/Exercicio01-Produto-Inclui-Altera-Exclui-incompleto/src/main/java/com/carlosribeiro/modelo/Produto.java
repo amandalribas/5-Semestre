@@ -4,9 +4,12 @@ import javax.persistence.*;
 import java.time.LocalDate;
 
 @Entity
-@Table(name = "Produto")
+//@Table(name = "Produto")
 public class Produto
 {
+    //Se coloca as notações de @ aqui, precisa botar todas para não dar erro.
+    //@Id //chave primária
+    //@GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     private String nome;
     private double lanceMinimo;
@@ -29,7 +32,7 @@ public class Produto
 
     // ********* Métodos do Tipo Get *********
 
-    @Id
+    @Id //chave primária
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     public Long getId()
     {	return id;

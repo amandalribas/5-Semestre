@@ -19,7 +19,6 @@ public class Principal
 		Produto umProduto;
 
 		ProdutoDAO produtoDAO = FabricaDeDAOs.getDAO(ProdutoDAO.class);
-
 		boolean continua = true;
 		while (continua)
 		{	System.out.println('\n' + "O que você deseja fazer?");
@@ -40,9 +39,9 @@ public class Principal
 					lanceMinimo = Console.readDouble(
 						"Informe o valor do lance mínimo: ");
 					dataCadastro = Console.readLine(
-						"Informe a data de cadastramento do produto: ");
-						
-					umProduto = new Produto(nome, lanceMinimo, Util.strToLocalDate(dataCadastro));
+						"Informe a data de cadastramento do produto: "); //recupera string
+					//criando objeto transiente:
+					umProduto = new Produto(nome, lanceMinimo, Util.strToLocalDate(dataCadastro)); //converte de String para LocalDate
 					
 					produtoDAO.inclui(umProduto);
 					
@@ -144,7 +143,7 @@ public class Principal
 					String resp = Console.readLine('\n' + 
 						"Confirma a remoção do produto?");
 
-					if(resp.equals("s"))
+					if(resp.equals("s")) //não pode ser == "s", pois compara os endereços de memória se resp é igual a "s", o que dá sempre falso
 					{	try
 						{
 							produtoDAO.exclui (umProduto.getId());

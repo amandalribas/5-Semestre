@@ -29,7 +29,7 @@ public class FabricaDeDAOs
 		// Retorna a classe JPAProdutoDAO na variável classe.
 		Class <? extends T> classe = conjunto.iterator().next();
         try {
-            return classe.getConstructor(); //quando a classe for criada será feito um construtor padrão
+            return classe.getConstructor().newInstance(); //quando a classe for criada será feito um construtor padrão
         } catch (InstantiationException |
 				 IllegalAccessException |
 				 InvocationTargetException |

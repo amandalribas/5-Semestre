@@ -20,7 +20,7 @@ public class JPAProdutoDAO implements ProdutoDAO {
 			// persistente - após ser persistido -- quando o objeto está sendo monitorado pelo entity manager
 			// destacado - objeto persistente não vinculado a um entity manager -- id != null e o objeto não está sendo monitorado pelo entity manager
 
-			em = FabricaDeEntityManager.criarEntityManager(); //toda vez cria um novo
+			em = FabricaDeEntityManager.criarEntityManager(); //toda vez cria um novo -- método estático
 			tx = em.getTransaction(); //toda vez que for executado também cria um novo
 			//abrindo transação:
 			tx.begin();
@@ -40,7 +40,6 @@ public class JPAProdutoDAO implements ProdutoDAO {
 				em.close();
 			}
 		}
-
 	}
 
 	public Produto recuperaUmProduto(long numero) throws ProdutoNaoEncontradoException {
@@ -48,6 +47,7 @@ public class JPAProdutoDAO implements ProdutoDAO {
 		//nao precisa de entity transaction pq é somente select
 		try {
 			em = FabricaDeEntityManager.criarEntityManager();
+			//Produto.class = aponta na memória para a classe produto
 			Produto umProduto = em.find(Produto.class, numero); //boxing automático de número: new Long(numero)
 
 			// Características no método find():
@@ -112,7 +112,7 @@ public class JPAProdutoDAO implements ProdutoDAO {
 		{
 			em = FabricaDeEntityManager.criarEntityManager();
 			tx = em.getTransaction();
-			tx.begin(); //
+			tx.begin();
 
 			//JPA não tem método de deleção direto ,exige que recupere primeiro o produto para depois deletar
 			Produto produto = em.find(Produto.class, numero); //não precisa botar lockmode
@@ -123,7 +123,6 @@ public class JPAProdutoDAO implements ProdutoDAO {
 			}
 
 			em.remove(produto); //remove exige um objeto persistente -- se não for persistente vai falar que não consegue usar objeto destacado
-
 			tx.commit();
 		}
 		catch(RuntimeException e)

@@ -1,7 +1,10 @@
 package org.example.apirestful.controller;
 
+import jakarta.validation.Valid;
+import org.example.apirestful.dto.ProdutoCreate;
 import org.example.apirestful.dto.ProdutoDto;
 import org.example.apirestful.exception.EntidadeNaoEncontradaException;
+import org.example.apirestful.mapper.ProdutoMapper;
 import org.example.apirestful.model.Produto;
 import org.example.apirestful.repository.ProdutoRepository;
 import org.example.apirestful.service.ProdutoService;
@@ -20,21 +23,30 @@ public class ProdutoController {
     //private ProdutoService produtoService = new ProdutoService();
     @Autowired //injeta em produtoService um objeto de uma classe que extende PRodutoService
     private ProdutoService produtoService;
+    @Autowired
+    private ProdutoRepository produtoRepository;
+    @Autowired
+    private ProdutoMapper produtoMapper;
 
-    @GetMapping //se chegar uma requisição do tipo get, esse método será executado
+
+
+    //se chegar uma requisição do tipo get, esse método será executado
     //Ex: Digitar url e enter : https//localhost8080/produtos
     //Controler chama serviço, serviço chama repositório
-    public List<ProdutoDto> recuperarProdutos(){
-
+    @GetMapping public List<ProdutoDto> recuperarProdutos(){
         return produtoService.recuperarProdutos();
     }
 
     //https//localhost8080/produtos/id
     @GetMapping("{idProduto}")
-    public Produto recuperarProdutoPorId(@PathVariable("idProduto") long id){
-        return produtoService.recuperarProdutoPorId(id); //Pega o objeto, cria um response entity, cria um produto com status ok e retorna
-        //retorna um produto para o spring boot, que cria um objeto do tipo ResponseEntity, coloca o Produto dentro e o status ok e envia pro Browser
+    public ProdutoDto recuperarProdutoPorId(@PathVariable("idProduto") long id){
+        Produto produto = produtoRepository.findById(id).orElseThrow(() -> new EntidadeNaoEncontradaException(
+                "Produto com id = " + id + "não encontrado"
+                ));
+        return produtoMapper.toProdutoDto(produto);
     }
+        //return produtoService.recuperarProdutoPorId(id); //Pega o objeto, cria um response entity, cria um produto com status ok e retorna
+        //retorna um produto para o spring boot, que cria um objeto do tipo ResponseEntity, coloca o Produto dentro e o status ok e envia pro Browser
 
 //    @GetMapping("{idProduto}")
 //    public ResponseEntity<?> recuperarProdutoPorId(@PathVariable("idProduto") long id){
@@ -47,17 +59,17 @@ public class ProdutoController {
 //    }
 
 
-
-
     @PostMapping
-    public Produto cadastrarProdutos(@RequestBody Produto produto){
-        return produtoService.cadastrarProduto(produto);
+    public ProdutoDto cadastrarProdutos(@RequestBody @Valid ProdutoCreate produtoCreate){
+        return produtoService.cadastrarProduto(produtoCreate);
     }
+
 
     @PutMapping
-    public Produto alterarProdutos(@RequestBody Produto produto){
-        return produtoService.alterarProduto(produto);
+    public ProdutoDto alterarProdutos(@RequestBody ProdutoDto produtoDto){
+        return produtoService.alterarProduto(produtoDto);
     }
+
 
     @DeleteMapping("{idProduto}")
     public void removerProdutoPorId(@PathVariable("idProduto") long id){

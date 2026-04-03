@@ -1,6 +1,7 @@
 package org.example.apirestful.service;
 
 import jakarta.transaction.Transactional;
+import org.example.apirestful.dto.ProdutoCreate;
 import org.example.apirestful.dto.ProdutoDto;
 import org.example.apirestful.exception.EntidadeNaoEncontradaException;
 import org.example.apirestful.mapper.ProdutoMapper;
@@ -28,18 +29,23 @@ public class ProdutoService {
         return produtoMapper.toProdutosDto(produtos);
     }
 
-    public Produto recuperarProdutoPorId(long id) {
-        return produtoRepository.findById(id) //trás o objeto e suas categorias
+    public ProdutoDto recuperarProdutoPorId(long id) {
+        Produto produto = produtoRepository.findById(id) //trás o objeto e suas categorias
                 .orElseThrow( () -> new EntidadeNaoEncontradaException(
                         "Produto com id = " + id + "não encontrado. "));
+        return produtoMapper.toProdutoDto(produto);
     }
 
-    public Produto cadastrarProduto(Produto produto){
-        return produtoRepository.save(produto); //chama o persist do JPA
+    public ProdutoDto cadastrarProduto(ProdutoCreate produtoCreate){
+        Produto produto = produtoMapper.toProduto(produtoCreate);  //id Será Nulo
+        produto = produtoRepository.save(produto); //chama o persist do JPA
+        return produtoMapper.toProdutoDto(produto);
     }
 
-    public Produto alterarProduto(Produto produto){
-        return produtoRepository.save(produto); //merge do JPA
+    public ProdutoDto alterarProduto(ProdutoDto produtoDto){
+        Produto produto = produtoMapper.toProduto(produtoDto);
+        produto = produtoRepository.save(produto); //merge do JPA
+        return produtoMapper.toProdutoDto(produto);
     }
 
     public void removerProdutoPorId(long id){

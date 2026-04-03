@@ -20,6 +20,8 @@ public class Categoria {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     private String nome;
+
+
     @JsonIgnore
     @OneToMany(mappedBy = "categoria") //Uma categoria para N produtos
     //mappedBy é um espelhamento, na propria categoria em produto haverá a propriedade many to one

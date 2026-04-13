@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
+@CrossOrigin("http://localhost:5173")
 @RestController //toda vez que chegar uma requisição para /produtos o tomcat recebe e procura um controller de uma aplicação restful
 @RequestMapping("produtos") //Se chegar uma requisição para /produtos esse controler vai aceitar requisições
 //ao encontrar requisições (do tipo get, put, delete, post):

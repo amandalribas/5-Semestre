@@ -84,7 +84,7 @@ const TabelaDeProdutos = ({ produtos }: Props) => {
                   useGrouping: true,
                 })}
               </td>
-              <td className="text-center w-[13%] border-r border-r-green-200 py-1">
+              <td className="w-[13%] border-r border-r-green-200 py-1">
                 <button className="btn-danger px-4 py-1" type="button">
                   <div className="flex items-center">
                   Remover
